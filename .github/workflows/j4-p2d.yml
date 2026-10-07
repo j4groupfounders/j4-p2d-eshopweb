@@ -28,6 +28,8 @@ jobs:
         run: dotnet test Everything.sln --configuration Release --no-build --logger "trx;LogFileName=project-tests.trx" --results-directory TestResults
       - name: Boot and characterize
         run: python3 j4_stage.py
+      - name: Independent seeded faults
+        run: python3 j4_seeds.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
