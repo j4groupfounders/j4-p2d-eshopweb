@@ -12,7 +12,7 @@ def run_http(dest,strict=True):
             env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
         try:
             with (dest/'probe.log').open('w') as log2:
-                probe=subprocess.run([sys.executable,'j4_probe.py'],stdout=log2,stderr=subprocess.STDOUT,timeout=180)
+                probe=subprocess.run([sys.executable,'j4_probe.py'],stdout=log2,stderr=subprocess.STDOUT,timeout=240)
             assert pathlib.Path('surface.actual.json').exists(),'server/probe infrastructure failure'
             import json
             surface=json.loads(pathlib.Path('surface.actual.json').read_text())

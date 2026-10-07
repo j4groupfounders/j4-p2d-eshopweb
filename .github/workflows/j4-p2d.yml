@@ -35,8 +35,7 @@ jobs:
           path: |
             TestResults/**
             surface.actual.json
-            boot.log
-            probe.log
+            http-evidence/**
             seed-results.json
             seed-evidence/
           retention-days: 30

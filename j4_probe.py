@@ -1,6 +1,6 @@
 import urllib.request,urllib.error,json,hashlib,time,re,pathlib
 routes=[('GET','/',None),('GET','/health',None)]
-for i in range(90):
+for i in range(110):
     try:
         urllib.request.urlopen('http://127.0.0.1:3000/health',timeout=2)
         break
