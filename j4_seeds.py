@@ -16,16 +16,16 @@ for name,file,old,new in mut:
         shutil.rmtree('TestResults',ignore_errors=True)
         with (dest/'test.log').open('w') as log:
             t=subprocess.run(['dotnet','test','Everything.sln','--configuration','Release','--no-build',
-                               '--logger','trx;LogFileName=seed.trx','--results-directory','TestResults'],
+                               '--logger','trx','--results-directory','TestResults'],
                               stdout=log,stderr=subprocess.STDOUT,timeout=300)
-        trxs=list(pathlib.Path('TestResults').rglob('*.trx'));assert trxs,'no trx produced (infrastructure failure)'
+        trxs=list(pathlib.Path('TestResults').rglob('*.trx'));assert len(trxs)==4,('expected 4 project trx files',len(trxs))
         cases=[]
         for f in trxs:
             root=ET.parse(f).getroot()
             cases += root.findall('.//t:UnitTestResult',NS)
         assert len(cases)==cfg['test_count'],('test inventory changed',len(cases))
         failed=sum(c.attrib.get('outcome')=='Failed' for c in cases)
-        shutil.copy(trxs[0],dest/'seed.trx')
+        for f in trxs:shutil.copy(f,dest/f.name)
         harness_detected=run_http(str(dest),strict=False)
         results.append({'fault':name,'project_detected':failed>0,'project_failures':failed,'harness_detected':harness_detected})
         pathlib.Path('seed-results.json').write_text(json.dumps(results,indent=2))
