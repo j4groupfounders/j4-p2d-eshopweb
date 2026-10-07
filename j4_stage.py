@@ -8,7 +8,7 @@ def run_http(dest,strict=True):
     env['ASPNETCORE_URLS']='http://127.0.0.1:3000'
     with (dest/'boot.log').open('w') as log:
         server=subprocess.Popen(
-            ['dotnet','run','--project','src/Web/Web.csproj','--configuration','Release','--no-build'],
+            ['dotnet','run','--project','src/Web/Web.csproj','--configuration','Release','--no-build','--no-launch-profile'],
             env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
         try:
             with (dest/'probe.log').open('w') as log2:
