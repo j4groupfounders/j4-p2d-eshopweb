@@ -10,11 +10,14 @@ for name,file,old,new in mut:
     dest=pathlib.Path('seed-evidence')/name;dest.mkdir(parents=True,exist_ok=True)
     try:
         p.write_text(original.replace(old,new,1))
+        # The Razor source generator / static-web-assets incremental caches corrupt across
+        # repeated same-process rebuilds in this loop (stale generated code, or a stale assets
+        # manifest, for files we never touched). `dotnet clean` first removes obj/bin so each
+        # mutation gets a truly fresh build instead of trying to debug either cache.
+        with (dest/'clean.log').open('w') as log:
+            subprocess.run(['dotnet','clean','Everything.sln','--configuration','Release'],stdout=log,stderr=subprocess.STDOUT,timeout=120)
         with (dest/'build.log').open('w') as log:
-            # --no-incremental: the Razor source generator's incremental cache corrupts across
-            # repeated same-process rebuilds in this loop (stale generated code for files we never
-            # touched), so force a clean full rebuild each time instead of debugging the generator cache.
-            b=subprocess.run(['dotnet','build','Everything.sln','--configuration','Release','--no-incremental'],stdout=log,stderr=subprocess.STDOUT,timeout=300)
+            b=subprocess.run(['dotnet','build','Everything.sln','--configuration','Release'],stdout=log,stderr=subprocess.STDOUT,timeout=300)
         assert b.returncode==0,'build infrastructure failure (not scored as a detection)'
         shutil.rmtree('TestResults',ignore_errors=True)
         with (dest/'test.log').open('w') as log:
