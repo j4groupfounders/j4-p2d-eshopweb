@@ -1,0 +1,32 @@
+[
+  [
+    "items-per-page",
+    "src/Web/Constants.cs",
+    "public const int ITEMS_PER_PAGE = 10;",
+    "public const int ITEMS_PER_PAGE = 1;"
+  ],
+  [
+    "add-to-basket-label",
+    "src/Web/Pages/Shared/_product.cshtml",
+    "value=\"[ ADD TO BASKET ]\"",
+    "value=\"[ BUY NOW ]\""
+  ],
+  [
+    "price-precision",
+    "src/Web/Pages/Shared/_product.cshtml",
+    "@Model.Price.ToString(\"N2\")",
+    "@Model.Price.ToString(\"N0\")"
+  ],
+  [
+    "pagination-previous-label",
+    "src/Web/Pages/Shared/_pagination.cshtml",
+    "aria-label=\"Previous\">\n                        Previous",
+    "aria-label=\"Previous\">\n                        Prev"
+  ],
+  [
+    "pagination-next-label",
+    "src/Web/Pages/Shared/_pagination.cshtml",
+    "aria-label=\"Next\">\n                        Next",
+    "aria-label=\"Next\">\n                        Nxt"
+  ]
+]
