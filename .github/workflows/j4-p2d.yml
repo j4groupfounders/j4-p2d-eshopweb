@@ -1,0 +1,42 @@
+name: J4 P2 batch 4 bounded verification
+on:
+  push:
+    branches: ['j4/p2d-*']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      UseOnlyInMemoryDatabase: 'true'
+      ASPNETCORE_ENVIRONMENT: Development
+      baseUrls__webBase: 'http://127.0.0.1:3000/'
+      baseUrls__apiBase: 'http://127.0.0.1:3000/api/'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            7.0.x
+            8.0.x
+      - name: Restore
+        run: dotnet restore Everything.sln
+      - name: Build
+        run: dotnet build Everything.sln --configuration Release --no-restore
+      - name: Project tests
+        run: dotnet test Everything.sln --configuration Release --no-build --logger "trx;LogFileName=project-tests.trx" --results-directory TestResults
+      - name: Boot and characterize
+        run: python3 j4_stage.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence
+          path: |
+            TestResults/**
+            surface.actual.json
+            boot.log
+            probe.log
+            seed-results.json
+            seed-evidence/
+          retention-days: 30
